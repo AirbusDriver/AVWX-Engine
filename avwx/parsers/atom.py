@@ -17,13 +17,13 @@ class BaseAtom(abc.ABC):
     """Atom represents a single encoded entity in an encoded string"""
 
     @abc.abstractmethod
-    def search(self, item: str) -> AtomSpan:
-        """Return a StringSpan. If no match found, return a StringSpan(None, None, None)"""
+    def to_atom_span(self, item: str) -> AtomSpan:
+        """Return an `AtomSpan`. If no match found, return `AtomSpan(None, None, None)`"""
         pass
 
     def is_in(self, string) -> bool:
-        """Return True if the Atom is in the string"""
-        return self.search(string).match is not None
+        """Return True if the atom is in the string"""
+        return self.to_atom_span(string).match is not None
 
 
 class RegexAtom(BaseAtom):
@@ -67,7 +67,7 @@ class RegexAtom(BaseAtom):
 
         return out
 
-    def search(self, string: str) -> AtomSpan:
+    def to_atom_span(self, string: str) -> AtomSpan:
         """
         Search the string for the atom
         """
@@ -76,3 +76,9 @@ class RegexAtom(BaseAtom):
             start, stop = match.span()
             return AtomSpan(match=match.group(), start=start, end=stop)
         return AtomSpan(None, None, None)
+
+    def search(self, string: str) -> Optional[re.Match]:
+        """
+        Return `re.Match` object or None
+        """
+        return self.regex.search(string)
