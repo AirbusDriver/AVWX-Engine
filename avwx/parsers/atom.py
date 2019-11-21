@@ -16,14 +16,28 @@ class AtomSpan(NamedTuple):
 class BaseAtom(abc.ABC):
     """Atom represents a single encoded entity in an encoded string"""
 
+    def __init__(self, name: Optional[str] = None):
+        self.name = name
+
     @abc.abstractmethod
     def to_atom_span(self, item: str) -> AtomSpan:
         """Return an `AtomSpan`. If no match found, return `AtomSpan(None, None, None)`"""
         pass
 
-    def is_in(self, string) -> bool:
+    def find_atom_in_string(self, string: str) -> Optional[str]:
+        """Return the matching atom from a string"""
+        return self.to_atom_span(string).match
+
+    def is_in(self, string: str) -> bool:
         """Return True if the atom is in the string"""
-        return self.to_atom_span(string).match is not None
+        return self.find_atom_in_string(string) is not None
+
+    def extract_atom_from_string(self, string: str) -> str:
+        """Return string with the atom removed"""
+        span = self.to_atom_span(string)
+        if span.start is None or span.end is None:
+            raise ValueError(f"Atom: '{self.name}' not in '{string}'")
+        return string[: span.start] + string[span.end :]
 
 
 class RegexAtom(BaseAtom):
@@ -31,7 +45,9 @@ class RegexAtom(BaseAtom):
 
     def __init__(self, regex_pattern: re.Pattern, name: Optional[str] = None):
         self.regex = regex_pattern
-        self.name = name
+        if name is None:
+            name = regex_pattern.pattern
+        super().__init__(name)
 
     def __repr__(self):
         return f"{type(self).__name__}(pattern={self.regex!r}, name={self.name})"
