@@ -41,42 +41,48 @@ def mocked_atom_subclass(base_atom_subclass):
     return base_atom_subclass
 
 
+@pytest.fixture
+def mocked_atom_instance(mocked_atom_subclass):
+    atom = mocked_atom_subclass("sample atom")
+    return atom
+
+
 class TestBaseAtom:
     def test_constructor(self, base_atom_subclass):
         sub = base_atom_subclass("base atom")
         assert sub.name == "base atom"
 
-    def test_is_in(self, mocked_atom_subclass):
-        atom = mocked_atom_subclass()
+    def test_is_in(self, mocked_atom_instance):
+        atom = mocked_atom_instance
         atom.to_atom_span.return_value.match = "something"
 
         assert atom.is_in("string")
 
-    def test_is_in_returns_false(self, mocked_atom_subclass):
-        atom = mocked_atom_subclass()
+    def test_is_in_returns_false(self, mocked_atom_instance):
+        atom = mocked_atom_instance
         atom.to_atom_span.return_value.match = None
 
         assert not atom.is_in("string")
 
-    def test_find_atom_in_string(self, mocked_atom_subclass):
-        atom = mocked_atom_subclass()
+    def test_find_atom_in_string(self, mocked_atom_instance):
+        atom = mocked_atom_instance
         atom.to_atom_span.return_value.match = "string"
 
         assert atom.find_atom_in_string("this is a string") == "string"
 
-    def test_find_atom_in_string_return_none(self, mocked_atom_subclass):
-        atom = mocked_atom_subclass()
+    def test_find_atom_in_string_return_none(self, mocked_atom_instance):
+        atom = mocked_atom_instance
         atom.to_atom_span.return_value.match = None
 
         assert atom.find_atom_in_string("this is a string") is None
 
-    def test_extract_atom_from_string(self, mocked_atom_subclass):
-        atom = mocked_atom_subclass()
+    def test_extract_atom_from_string(self, mocked_atom_instance):
+        atom = mocked_atom_instance
         atom.to_atom_span.return_value = AtomSpan("string", 6, 12)
 
         s = "012345string23456789"
 
-        assert "01234523456789" == atom.extract_atom_from_string(s)
+        assert ("string", "01234523456789") == atom.extract_atom_from_string(s)
 
     def test_extract_atom_from_string_raises(self, mocked_atom_subclass):
         atom = mocked_atom_subclass(name="some atom")

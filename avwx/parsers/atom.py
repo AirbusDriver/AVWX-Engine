@@ -16,7 +16,7 @@ class AtomSpan(NamedTuple):
 class BaseAtom(abc.ABC):
     """Atom represents a single encoded entity in an encoded string"""
 
-    def __init__(self, name: Optional[str] = None):
+    def __init__(self, name: str):
         self.name = name
 
     @abc.abstractmethod
@@ -32,21 +32,28 @@ class BaseAtom(abc.ABC):
         """Return True if the atom is in the string"""
         return self.find_atom_in_string(string) is not None
 
-    def extract_atom_from_string(self, string: str) -> str:
-        """Return string with the atom removed"""
+    # todo: add strip
+    def extract_atom_from_string(self, string: str) -> Tuple[str, str]:
+        """
+        Return extracted atom and string with atom extracted
+
+        For instance, if the atom were "some string" and the input were
+        "this is some string I have"..
+
+        return -> "some string", "this is  I have"
+        """
         span = self.to_atom_span(string)
         if span.start is None or span.end is None:
             raise ValueError(f"Atom: '{self.name}' not in '{string}'")
-        return string[: span.start] + string[span.end :]
+        return span.match, string[: span.start] + string[span.end :]
 
 
+# todo: enforce name
 class RegexAtom(BaseAtom):
     """Atom defined by regex pattern"""
 
-    def __init__(self, regex_pattern: re.Pattern, name: Optional[str] = None):
+    def __init__(self, regex_pattern: re.Pattern, name: str):
         self.regex = regex_pattern
-        if name is None:
-            name = regex_pattern.pattern
         super().__init__(name)
 
     def __repr__(self):

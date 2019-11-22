@@ -16,6 +16,6 @@ class CanNotHandleError(AtomHandlerException):
 
 
 class TranslationError(AtomHandlerException):
-    """Unexpected error occured during translation"""
+    """Unexpected error occurred during translation"""
 
     pass
