@@ -3,9 +3,7 @@ from avwx.parsing import AtomHandler
 from . import atoms
 from . import translations as trans
 
-
-automated_station_handler = AtomHandler(atoms.automated_station_atom)
-
+# todo: simple translations should have their own class method
 aircraft_mishap_handler = AtomHandler(
     atoms.aircraft_mishap_atom, lambda a, s: "Aircraft mishap"
 )

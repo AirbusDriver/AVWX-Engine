@@ -1,6 +1,6 @@
 import abc
 import re
-from typing import Optional, Any, NamedTuple, Union, Tuple, Iterable
+from typing import Optional, Any, NamedTuple, Union, Tuple, Iterable, Dict
 
 
 class AtomSpan(NamedTuple):
@@ -46,6 +46,10 @@ class BaseAtom(abc.ABC):
         if span.start is None or span.end is None:
             raise ValueError(f"Atom: '{self.name}' not in '{string}'")
         return span.match, string[: span.start] + string[span.end :]
+
+    def to_data_dict(self, string: str) -> Dict[str, str]:
+        """Return a dict containing decoded data, if any, from string"""
+        raise NotImplementedError(f"{type(self).__name__} does not implement")
 
 
 # todo: enforce name
@@ -105,3 +109,10 @@ class RegexAtom(BaseAtom):
         Return `re.Match` object or None
         """
         return self.regex.search(string)
+
+    def to_data_dict(self, string: str) -> Dict[str, str]:
+        match = self.search(string)
+        if match:
+            return match.groupdict()
+        else:
+            return {}

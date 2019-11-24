@@ -34,11 +34,9 @@ TranslationCallable:
         a default translation or error code should be used instead for cleanup
 """
 
-import abc
-from typing import Dict, Union, Optional, TYPE_CHECKING, Callable, Any
-import re
+from typing import Callable
 
-from .exceptions import CanNotHandleError, TranslationError
+from .exceptions import CanNotHandleError
 from .atom import BaseAtom
 
 

@@ -1,12 +1,12 @@
-from avwx.parsing import RegexAtom, TranslationError
+from avwx.parsing import BaseAtom, TranslationError
 
 
-def begin_end_of_precip_trans(atom: RegexAtom, string: str) -> str:
+def begin_end_of_precip_trans(atom: BaseAtom, string: str) -> str:
     """Rain|Thunderstorm began|ended at [HH]MM [and ended at [HH]MM]"""
-    match = atom.search(string)
+    match = atom.to_atom_span(string).match
 
     if match:
-        data = match.groupdict()
+        data = atom.to_data_dict(match)
     else:
         raise TranslationError(f"no match could be made from {string}")
 
