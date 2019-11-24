@@ -11,6 +11,7 @@ from avwx.static import (
     WX_TRANSLATIONS,
 )
 from avwx.structs import RemarksData
+from avwx.parsing import Parser
 
 
 def _tdec(code: str, unit: str = "C") -> str:
@@ -92,6 +93,9 @@ def parse(rmk: str) -> RemarksData:
             rmkdata["temperature_decimal"] = _core.make_number(_tdec(item[1:5], None))
             rmkdata["dewpoint_decimal"] = _core.make_number(_tdec(item[5:], None))
     return RemarksData(**rmkdata)
+
+
+parser = Parser()
 
 
 def translate(remarks: str) -> {str: str}:

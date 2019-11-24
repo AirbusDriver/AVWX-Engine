@@ -5,9 +5,11 @@ tests/test_remarks.py
 
 # library
 import unittest
+import pytest
 
 # module
 from avwx import _core, remarks, static, structs
+from avwx.remarks import translations, atoms
 
 
 class TestRemarks(unittest.TestCase):
@@ -116,3 +118,20 @@ class TestRemarks(unittest.TestCase):
             ),
         ):
             self.assertEqual(remarks.translate(rmk), out)
+
+
+class TestRemarksTranslations:
+    @pytest.mark.parametrize(
+        "inp, exp",
+        [
+            ("RAB12E34", "Rain began at 12 and ended at 34"),
+            ("RAB0123E1234", "Rain began at 0123 and ended at 1234"),
+            ("TSE34", "Thunderstorm ended at 34"),
+        ],
+    )
+    def test_begin_end_of_precip_trans(self, inp, exp):
+        atom = atoms.begin_end_precip_and_ts_atom
+
+        result = translations.begin_end_of_precip_trans(atom, inp)
+
+        assert result == exp
