@@ -2,7 +2,7 @@ import pytest
 import re
 from unittest import mock
 
-from avwx.parsers.atom import AtomSpan, RegexAtom, BaseAtom
+from avwx.parsing.atom import AtomSpan, RegexAtom, BaseAtom
 
 
 @pytest.fixture

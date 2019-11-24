@@ -3,8 +3,8 @@ from unittest import mock
 
 import pytest
 
-from avwx.parsers import Parser, AtomHandler, BaseAtom, RegexAtom
-from avwx.parsers.exceptions import TranslationError
+from avwx.parsing import Parser, AtomHandler, BaseAtom, RegexAtom
+from avwx.parsing.exceptions import TranslationError
 
 
 SAMPLE_STRING = """TH1S 1S AN 3NC0D3D STRING"""

@@ -1,5 +1,5 @@
 """
-Exceptions for 'parsers' package
+Exceptions for 'parsing' package
 """
 
 

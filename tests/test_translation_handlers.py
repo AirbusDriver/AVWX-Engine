@@ -1,8 +1,8 @@
 import pytest
 from unittest import mock
 
-from avwx.parsers.atom_handlers import AtomHandler, BaseAtom
-from avwx.parsers.exceptions import CanNotHandleError
+from avwx.parsing.atom_handlers import AtomHandler, BaseAtom
+from avwx.parsing.exceptions import CanNotHandleError
 
 SAMPLE_STRING = "THIS IS A SAMPLE STRING WITH 3NC0D3D DATA"
 
