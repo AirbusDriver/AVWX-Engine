@@ -12,6 +12,7 @@ from avwx.static import (
 )
 from avwx.structs import RemarksData
 from avwx.parsing import Parser
+from . import handlers
 
 
 def _tdec(code: str, unit: str = "C") -> str:
@@ -96,6 +97,14 @@ def parse(rmk: str) -> RemarksData:
 
 
 parser = Parser()
+
+parser_handlers = [
+    handlers.ceiling_height_at_second_location_handler,
+    handlers.aircraft_mishap_handler,
+    handlers.begin_end_precip_handler,
+]
+for handler in parser_handlers:
+    parser.register_handler(handler)
 
 
 def translate(remarks: str) -> {str: str}:

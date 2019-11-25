@@ -77,6 +77,7 @@ PRESSURE_CHANGE_RE = re.compile(r"\bPRES(?P<direction>[FR])R\b")
 
 REMARKS_IDENTIFIER_RE = re.compile(r"\bRMK\b")
 
+# todo: add 'non-operational'
 SEA_LEVEL_PRESSURE_RE = re.compile(r"\bSLP(?P<pressure>\d{1,3})\b")
 
 TORNADO_ACTIVITY_RE = re.compile(

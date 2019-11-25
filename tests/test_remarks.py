@@ -9,7 +9,7 @@ import pytest
 
 # module
 from avwx import _core, remarks, static, structs
-from avwx.remarks import translations, atoms
+from avwx.remarks import translations, atoms, parser
 
 
 class TestRemarks(unittest.TestCase):
@@ -147,5 +147,24 @@ class TestRemarksTranslations:
         atom = atoms.ceiling_height_at_second_location_atom
 
         result = translations.ceiling_height_at_second_location_trans(atom, inp)
+
+        assert result == exp
+
+
+class TestRemarksParser:
+    parser = remarks.parser
+
+    def test_parser_translate(self):
+        inp = """
+        ACFT MSHP CIG 123 RWY12L TSB0123E1234
+        """
+
+        exp = {
+            "ACFT MSHP": "Aircraft mishap",
+            "CIG 123 RWY12L": "Ceiling height 123 over runway 12 left",
+            "TSB0123E1234": "Thunderstorm began at 0123 and ended at 1234",
+        }
+
+        result = self.parser.parse_into_translations(inp)
 
         assert result == exp
