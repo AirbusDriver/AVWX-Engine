@@ -135,3 +135,17 @@ class TestRemarksTranslations:
         result = translations.begin_end_of_precip_trans(atom, inp)
 
         assert result == exp
+
+    @pytest.mark.parametrize(
+        "inp, exp",
+        [
+            ("CIG 012 RWY12C", "Ceiling height 012 over runway 12 center"),
+            ("CIG 999 RWY01", "Ceiling height 999 over runway 01"),
+        ],
+    )
+    def test_ceiling_height_at_second_location_trans(self, inp, exp):
+        atom = atoms.ceiling_height_at_second_location_atom
+
+        result = translations.ceiling_height_at_second_location_trans(atom, inp)
+
+        assert result == exp
