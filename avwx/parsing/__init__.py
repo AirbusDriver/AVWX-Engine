@@ -73,7 +73,11 @@ class Parser:
 
         working_string = string[::]
         valid_handlers = self._iter_handlers_that_can_handle_string(working_string)
-        current_handler = next(valid_handlers)
+
+        try:
+            current_handler = next(valid_handlers)
+        except StopIteration:
+            return {}
 
         failed_handlers: Set[AtomHandler] = set()
 
