@@ -11,3 +11,8 @@ aircraft_mishap_handler = AtomHandler(
 begin_end_precip_handler = AtomHandler(
     atoms.begin_end_precip_and_ts_atom, trans.begin_end_of_precip_trans
 )
+
+ceiling_height_at_second_location_handler = AtomHandler(
+    atoms.ceiling_height_at_second_location_atom,
+    trans.ceiling_height_at_second_location_trans,
+)
