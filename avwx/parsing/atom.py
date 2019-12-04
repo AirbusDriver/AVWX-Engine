@@ -1,24 +1,30 @@
 import abc
 import re
-from typing import Optional, Any, NamedTuple, Union, Tuple, Iterable, Dict
+from typing import Optional, NamedTuple, Tuple, Dict
 
 
+# todo: add text
 class AtomSpan(NamedTuple):
     """
     Finding within a string. Can be used for slicing as `end` is non-inclusive.
+
+    'context' is a Dict[str,str] that can be used in translation functions.
     """
 
     match: Optional[str]
     start: Optional[int]
     end: Optional[int]
+    context: Optional[Dict[str, str]]
 
 
+# todo: add make_context
 class BaseAtom(abc.ABC):
     """Atom represents a single encoded entity in an encoded string"""
 
     def __init__(self, name: str):
         self.name = name
 
+    # todo: decorate to return an empty atom string from a False return value
     @abc.abstractmethod
     def to_atom_span(self, item: str) -> AtomSpan:
         """Return an `AtomSpan`. If no match found, return `AtomSpan(None, None, None)`"""
@@ -45,11 +51,11 @@ class BaseAtom(abc.ABC):
         span = self.to_atom_span(string)
         if span.start is None or span.end is None:
             raise ValueError(f"Atom: '{self.name}' not in '{string}'")
-        return span.match, string[: span.start] + string[span.end :]
+        else:
+            match = span.match or ""
+            extract = string[: span.start] + string[span.end :]
 
-    def to_data_dict(self, string: str) -> Dict[str, str]:
-        """Return a dict containing decoded data, if any, from string"""
-        raise NotImplementedError(f"{type(self).__name__} does not implement")
+            return match, extract
 
 
 # todo: enforce name
@@ -73,12 +79,22 @@ class RegexAtom(BaseAtom):
             raise TypeError("regex must be a compiled `re.Pattern`")
         self._regex = regex
 
+    # fixme: name should NOT be optional
     @classmethod
     def from_pattern_string(
         cls, pattern: str, *flags: re.RegexFlag, name: Optional[str] = None
     ) -> "RegexAtom":
         """
         Return a new instance of `RegexAtom` from a string pattern.
+
+        .. note::
+
+            It is important to ensure that patterns are raw strings, just like
+            you were creating a compiled regex pattern normally.
+
+        .. code-block::
+
+            aircraft_mishap_atom = RegexAtom.from_pattern_string(r"\bACFT MSHP\b")
 
         :param pattern: string to be compiled into regex pattern
         :param flags: flags to pass to `re.compile`
@@ -101,18 +117,14 @@ class RegexAtom(BaseAtom):
         match = self.regex.search(string)
         if match:
             start, stop = match.span()
-            return AtomSpan(match=match.group(), start=start, end=stop)
-        return AtomSpan(None, None, None)
+            return AtomSpan(
+                match=match.group(), start=start, end=stop, context=match.groupdict()
+            )
+        return AtomSpan(match=None, start=None, end=None, context={})
 
+    # todo: remove to use context in `to_atom_span` instead
     def search(self, string: str) -> Optional[re.Match]:
         """
         Return `re.Match` object or None
         """
         return self.regex.search(string)
-
-    def to_data_dict(self, string: str) -> Dict[str, str]:
-        match = self.search(string)
-        if match:
-            return match.groupdict()
-        else:
-            return {}

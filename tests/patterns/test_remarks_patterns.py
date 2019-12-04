@@ -3,6 +3,7 @@
 import pytest
 
 import avwx.remarks.patterns as rp
+
 from tests.patterns.utils import assert_match, assert_group_dict
 
 param = pytest.mark.parametrize  # alias

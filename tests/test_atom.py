@@ -77,16 +77,18 @@ class TestBaseAtom:
         assert atom.find_atom_in_string("this is a string") is None
 
     def test_extract_atom_from_string(self, mocked_atom_instance):
-        atom = mocked_atom_instance
-        atom.to_atom_span.return_value = AtomSpan("string", 6, 12)
-
         s = "012345string23456789"
+
+        atom = mocked_atom_instance
+        atom.to_atom_span.return_value = AtomSpan(
+            match="string", start=6, end=12, context={},
+        )
 
         assert ("string", "01234523456789") == atom.extract_atom_from_string(s)
 
     def test_extract_atom_from_string_raises(self, mocked_atom_subclass):
         atom = mocked_atom_subclass(name="some atom")
-        atom.to_atom_span.return_value = AtomSpan(None, None, None)
+        atom.to_atom_span.return_value = AtomSpan(None, None, None, None)
 
         with pytest.raises(ValueError) as exc_info:
             atom.extract_atom_from_string("some string")
@@ -103,8 +105,10 @@ class TestRegexAtom:
         assert atom.name == "Some Pattern"
 
     def test_to_atom_span(self, regex_atom):
-        exp = AtomSpan(match="SOME PATTERN P123", start=8, end=25)
-        match, start, end = regex_atom.to_atom_span(SUCCESS_STRING)
+        exp = AtomSpan(
+            match="SOME PATTERN P123", start=8, end=25, context={"digits": "123"}
+        )
+        match, start, end, context = regex_atom.to_atom_span(SUCCESS_STRING)
 
         assert regex_atom.to_atom_span(SUCCESS_STRING) == exp
         assert SUCCESS_STRING[start:end] == match

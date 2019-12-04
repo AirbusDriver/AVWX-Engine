@@ -60,4 +60,5 @@ target/
 /.nox
 /notes.txt
 /.idea
-/.mypy_cache
+/site
+.mypy_cache

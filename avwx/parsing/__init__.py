@@ -30,36 +30,6 @@ class Parser:
         except IndexError:
             raise IndexError(f"{handler} not registered to parser")
 
-    """
-    Preconditions:
-        - String
-        
-    Input:
-        - String that may contain Atoms
-        
-    Output:
-        - Dict:
-            - keys: extracted raw matches from input string
-            - values: result of translate call on handler
-        
-    STEPS:
-    ------
-    make a dict to accept translations
-    get all of the handlers that can perform translations on the string
-    get the first applicable handler
-    while there is a good handler
-        if the handler can still perform translation
-            perform the translation
-            if an error occurs during translation
-                OPTION 1: add raw: Error Message to translation
-                    - `prepend_error = str`
-                OPTION 2: raise to caller and abort
-                    - if `strict` set to True
-            extract the raw text from the string
-            add the translation to the results dict with the raw string
-    return the dict
-    """
-
     def parse_into_translations(
         self, string: str, strict: bool = True, prepend_error: str = "ERROR: "
     ) -> Dict[str, str]:
